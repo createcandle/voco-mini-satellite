@@ -16,8 +16,15 @@
    Look at the list of required libraries in General.hpp. For example:
    install  https://github.com/me-no-dev/ESPAsyncWebServer
    install 'RingBuffer' library from Locoduino https://github.com/Locoduino/RingBuffer
-   install 'PubSubClient' library
- 
+   install 'PubSubClient' library from https://github.com/knolleary/pubsubclient.git
+   https://github.com/matrix-io/matrixio_hal_esp32.git
+   https://github.com/marvinroger/async-mqtt-client.git
+   https://github.com/me-no-dev/AsyncTCP.git
+   install 'ArduinoJson' library from https://github.com/bblanchon/ArduinoJson.git
+   ESP Async WebServer
+   m5stack/M5Atom
+   fastled/FastLED
+   yveaux/AC101 @ ^0.0.1
 
 
    
@@ -90,6 +97,8 @@
     - Audio task should run on core 1
 * ************************************************************************ */
 
+
+
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 #include <WiFi.h>
@@ -104,15 +113,18 @@
 
 #define WIFI_SSID ""
 #define WIFI_PASS ""
+
 #define OTA_PASS_HASH "start"
 #define SITEID "atomecho"
 #define HOSTNAME "atomecho"
-#define MQTT_IP "192.168.1.1"
+#define MQTT_IP "192.168.1.167"
 #define MQTT_PORT 1883
 #define MQTT_USER ""
 #define MQTT_PASS ""
 #define MQTT_MAX_PACKET_SIZE 2000
 #define CONFIG_ASYNC_TCP_RUNNING_CORE 1
+
+
 
 
 // Set these values below if you want this device to have a fixed IP address.
@@ -199,6 +211,7 @@ void setup() {
 
   server.on("/", handleRequest);
   server.begin();
+  Serial.print("end of setup");
 }
 
 void loop() {

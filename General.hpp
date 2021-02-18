@@ -337,19 +337,24 @@ void publishDebug(const char* message) {
 }
 
 void loadConfiguration(const char *filename, Config &config) {
-  File file = SPIFFS.open(filename);
+  Serial.println(filename);
+  File file = SPIFFS.open(filename); // config.json
   StaticJsonDocument<512> doc;
   // Deserialize the JSON document
   DeserializationError error = deserializeJson(doc, file);
   if (error) {
     Serial.println(F("Failed to read file, using default configuration"));
     config.mqtt_valid = config.mqtt_host.fromString(MQTT_IP);
+    config.mqtt_port = 1883; //doc.getMember("mqtt_port").as<int>();
+    config.mute_input = false;
+    config.mute_output = false;
   } else {
     serializeJsonPretty(doc, Serial);
     Serial.println();  
     config.mqtt_valid = config.mqtt_host.fromString(doc.getMember("mqtt_host").as<const char*>());
     config.mqtt_port = doc.getMember("mqtt_port").as<int>();
     config.mqtt_user = doc.getMember("mqtt_user").as<std::string>();
+    //Serial.print("config.mqtt_user = "); Serial.println(config.mqtt_user);
     config.mqtt_pass = doc.getMember("mqtt_pass").as<std::string>();
     config.mute_input = doc.getMember("mute_input").as<int>();
     config.mute_output = doc.getMember("mute_output").as<int>();
@@ -360,12 +365,15 @@ void loadConfiguration(const char *filename, Config &config) {
     config.hotword_brightness = doc.getMember("hotword_brightness").as<int>();
     config.hotword_detection = doc.getMember("hotword_detection").as<int>();
     config.volume = doc.getMember("volume").as<int>();
+    //Serial.print("config.volume = "); Serial.println(config.volume);
     device->setVolume(config.volume);
     config.gain = doc.getMember("gain").as<int>();
     device->setGain(config.gain);
     if (config.mqtt_host[0] == 0) {
         config.mqtt_valid = false;
+        Serial.println("invalid mqtt");
     }
+    Serial.println("config file loaded");  
   }
   file.close();
 }

@@ -79,6 +79,7 @@ class Idle : public StateMachine
 
   void run(void) override {
     if (device->isHotwordDetected() && !hotwordDetected) {
+      Serial.println("hotword detected");
       hotwordDetected = true;
       //start session by publishing a message to hermes/dialogueManager/startSession
       std::string message = "{\"init\":{\"type\":\"action\",\"canBeEnqueued\": false},\"siteId\":\"" + std::string(SITEID) + "\"}";
@@ -149,20 +150,30 @@ class MQTTDisconnected : public StateMachine {
       asyncClient.disconnect();
     }
     if (!mqttInitialized) {
+      Serial.println("MQTT was not initialized.");
       asyncClient.onMessage(onMqttMessage);
       mqttInitialized = true;
     }
     asyncClient.setClientId(SITEID);
+    Serial.println("past setClientId");
+    Serial.println(config.mqtt_host);
+    Serial.println(config.mqtt_port);
     asyncClient.setServer(config.mqtt_host, config.mqtt_port);
-    asyncClient.setCredentials(MQTT_USER, MQTT_PASS);
+    //asyncClient.setCredentials(MQTT_USER, MQTT_PASS);
+    //asyncClient.setCredentials();
     audioServer.setServer(config.mqtt_host, config.mqtt_port);
     char clientID[100];
     sprintf(clientID, "%sAudio", SITEID);
-   asyncClient.connect();
-    audioServer.connect(clientID, MQTT_USER, MQTT_PASS);
+    Serial.print("clientID = "); Serial.println(clientID);
+    asyncClient.connect();
+    Serial.print("past asyncclient.connect");
+    //audioServer.connect(clientID, MQTT_USER, MQTT_PASS);
+    audioServer.connect(clientID);
+    Serial.print("end of mqttdisconnected");
   }
 
   void run(void) override {
+    //Serial.print("in run");
     if (audioServer.connected() && asyncClient.connected()) {
       transit<MQTTConnected>();
     } else {
@@ -194,6 +205,7 @@ class WifiConnected : public StateMachine
     device->updateColors(COLORS_WIFI_CONNECTED);
     ArduinoOTA.begin();
     transit<MQTTDisconnected>();
+    Serial.println("Entry complete");
   }
 
   void react(WifiDisconnectEvent const &) override { 
@@ -206,7 +218,9 @@ class WifiDisconnected : public StateMachine
 {
   void entry(void) override {
     if (!audioGroup) {
+      Serial.println("no audiogroup so xEventGroupCreate");
       audioGroup = xEventGroupCreate();
+      
     }
     //Mute initial output
     device->muteOutput(true);
@@ -301,6 +315,7 @@ std::vector<std::string> explode( const std::string &delimiter, const std::strin
 }
 
 void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+  Serial.println("mqtt message received");
   std::string topicstr(topic);
   if (len + index == total) {
     if (topicstr.find("toggleOff") != std::string::npos) {

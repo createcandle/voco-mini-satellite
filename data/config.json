@@ -1,0 +1,14 @@
+{
+  "mqtt_host": "192.168.2.167",
+  "mqtt_port":1883,
+  "mqtt_user":null,
+  "mqtt_pass":null,
+  "mute_input":true,
+  "mute_output":true,
+  "amp_output":0,
+  "brightness":100,
+  "hotword_brightness":100,
+  "hotword_detection":0,
+  "volume":100,
+  "gain":100
+}
