@@ -109,7 +109,7 @@
 #define AUDIOKIT 2
 #define TTGOCAMWHITE 3
 
-#define DEVICE_TYPE 0 // Select from the list avobe.
+#define DEVICE_TYPE 0 // Select from the list above.
 
 #define WIFI_SSID ""
 #define WIFI_PASS ""
@@ -124,7 +124,7 @@
 #define MQTT_MAX_PACKET_SIZE 2000
 #define CONFIG_ASYNC_TCP_RUNNING_CORE 1
 
-
+boolean I2StaskCreated = false;
 
 
 // Set these values below if you want this device to have a fixed IP address.
@@ -211,12 +211,12 @@ void setup() {
 
   server.on("/", handleRequest);
   server.begin();
-  Serial.print("end of setup");
+  Serial.print(F("end of setup"));
 }
 
 void loop() {
   if (WiFi.isConnected()) {
-    ArduinoOTA.handle();
+    //ArduinoOTA.handle();
   }
   fsm::run();
 }

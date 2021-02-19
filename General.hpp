@@ -361,7 +361,7 @@ void loadConfiguration(const char *filename, Config &config) {
     config.amp_output = doc.getMember("amp_output").as<int>();
     device->ampOutput(config.amp_output);
     config.brightness = doc.getMember("brightness").as<int>();
-    device->updateBrightness(config.brightness);
+    //device->updateBrightness(config.brightness);
     config.hotword_brightness = doc.getMember("hotword_brightness").as<int>();
     config.hotword_detection = doc.getMember("hotword_detection").as<int>();
     config.volume = doc.getMember("volume").as<int>();
