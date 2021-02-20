@@ -80,7 +80,7 @@ class Idle : public StateMachine
     if (config.hotword_detection == HW_REMOTE)
     {
       xEventGroupSetBits(audioGroup, STREAM);
-      Serial.println("DEBUG NOT started streaming immediately");
+      Serial.println("idle started streaming");
     }
     Serial.println("idle init complete");
   }
@@ -139,6 +139,7 @@ class MQTTConnected : public StateMachine {
   }
 
   void react(MQTTDisconnectedEvent const &) override { 
+    Serial.println("MQTTConnected react to MQTTDisconnectedEvent");
     transit<MQTTDisconnected>();
   }
 
@@ -182,6 +183,7 @@ class MQTTDisconnected : public StateMachine {
     Serial.print("clientID = "); Serial.println(clientID);
 
     //audioServer.setClientId(clientID);
+    audioServer.setBufferSize(MQTT_MAX_PACKET_SIZE);
     audioServer.setServer(config.mqtt_host, config.mqtt_port);
     
     Serial.println("past asyncclient.connect");
@@ -289,6 +291,7 @@ class WifiDisconnected : public StateMachine
     WiFi.onEvent(WiFiEvent);
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
+    Serial.println("Wifi begin..");
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
         retryCount++;
         if (retryCount > 2) {
@@ -622,8 +625,6 @@ void I2Stask(void *p) {
           for (int i = 0; i < sizeof(data); i++) {
             //Serial.print(data[i]);
           }
-
-          
           
           for (int i = 0; i < message_count; i++) {
             memcpy(payload, &header, sizeof(header));
@@ -632,9 +633,8 @@ void I2Stask(void *p) {
             //  Serial.print(payload[i]);
             //}
             //Serial.println("");
-            //audioServer.publish(audioFrameTopic.c_str(),(uint8_t *)payload, sizeof(payload));
-            //audioServer.publish(audioFrameTopic.c_str(),payload, sizeof(payload));
-            audioServer.publish(audioFrameTopic.c_str(),"x", 1);
+            audioServer.publish(audioFrameTopic.c_str(),(uint8_t *)payload, sizeof(payload));
+            //audioServer.publish(audioFrameTopic.c_str(),"x", 1);
             //Serial.print(">");
           }
         } else {
