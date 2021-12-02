@@ -1,5 +1,6 @@
 {
-"mqtt_host": "192.168.2.167",
+"siteid": "ATOMECHO",
+"mqtt_host": "192.168.2.165",
 "mqtt_port": 1883,
 "mqtt_user": "",
 "mqtt_pass": "",
@@ -9,7 +10,7 @@
 "amp_output": 0,
 "brightness": 30,
 "hotword_brightness": 100,
-"hotword_detection": 1,
+"hotword_detection": 0,
 "volume": 100,
-"gain": 5
+"gain": 8
 }

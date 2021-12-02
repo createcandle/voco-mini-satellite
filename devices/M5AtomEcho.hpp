@@ -13,8 +13,8 @@ class M5AtomEcho : public Device
 public:
   M5AtomEcho();
   void init();
-  void updateColors(int colors);
-  void updateBrightness(int brightness);
+  //void updateColors(int colors);
+  //void updateBrightness(int brightness);
   void setReadMode();
   void setWriteMode(int sampleRate, int bitDepth, int numChannels);
   void writeAudio(uint8_t *data, size_t size, size_t *bytes_written);
@@ -37,7 +37,7 @@ bool M5AtomEcho::isHotwordDetected() {
   M5.update();
   return M5.Btn.isPressed();
 }
-
+/**
 void M5AtomEcho::updateColors(int colors)
 {
   switch (colors) {
@@ -62,7 +62,7 @@ void M5AtomEcho::updateColors(int colors)
 void M5AtomEcho::updateBrightness(int brightness) {
   M5.dis.setBrightness(brightness);
 }
-
+*/
 void M5AtomEcho::InitI2SSpeakerOrMic(int mode)
 {
     esp_err_t err = ESP_OK;
